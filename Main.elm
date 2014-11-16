@@ -20,7 +20,7 @@ render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
   let (w,h) = (toFloat w', toFloat h')
   in collage w' h'
-    ((circle 10 |> outlined (solid (rgb 50 150 200)) 
+    ((square 10 |> outlined (solid (rgb 50 150 200)) 
                 |> move (V2.getX pod.pos, V2.getY pod.pos))
      :: map renderPlanet planets)
 
