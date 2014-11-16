@@ -17,7 +17,7 @@ step : (Float,{ x:Int, y:Int }) -> Game -> Game
 step (t,dir) g = { g | pod <- g.pod |> gravityPull g.planets |> boost dir |> physics t }
 
 physics : Float -> Pod -> Pod
-physics t p = { p | pos <- V2.add p.pos <| V2.scale t p.vel }
+physics t p = { p | pos <- p.pos `V2.add` V2.scale t p.vel }
 
 boost : { x:Int, y:Int } -> Pod -> Pod
 boost { x, y } p = 
