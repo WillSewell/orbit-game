@@ -14,15 +14,16 @@ defaultGame =
               , { pos=V2.vec2 150 200, mass=15 }] }
 
 step : (Float,{ x:Int, y:Int }) -> Game -> Game
-step (t,dir) g = { g | pod <- g.pod |> boost dir |> physics t }
+step (t,dir) g = { g | pod <- g.pod |> gravityPull g.planets |> boost dir |> physics t }
 
 physics : Float -> Pod -> Pod
-physics t p = { p | pos <- V2.vec2 (V2.getX p.pos + t * V2.getX p.vel)
-                                   (V2.getY p.pos + t * V2.getY p.vel) }
+physics t p = { p | pos <- V2.add p.pos <| V2.scale t p.vel }
 
 boost : { x:Int, y:Int } -> Pod -> Pod
 boost { x, y } p = { p | vel <- V2.vec2 (((toFloat x) / 5) + V2.getX p.vel)
                                         (((toFloat y) / 5) + V2.getY p.vel) }
+
+gravityPull planets p = foldl (\planet pod -> { p | vel <- p.vel }) p planets {- finish this needs to be something like multiplying the old velocity by the vector between the pod and planet, which needs to be weighted by the mass of the planet -}
               
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
