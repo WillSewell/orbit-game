@@ -21,7 +21,8 @@ physics t p = { p | pos <- V2.vec2 (V2.getX p.pos + t * V2.getX p.vel)
                                    (V2.getY p.pos + t * V2.getY p.vel) }
 
 boost : { x:Int, y:Int } -> Pod -> Pod
-boost { x, y } p = { p | vel <- V2.vec2 (toFloat x) (toFloat y) }
+boost { x, y } p = { p | vel <- V2.vec2 (((toFloat x) / 5) + V2.getX p.vel)
+                                        (((toFloat y) / 5) + V2.getY p.vel) }
               
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
