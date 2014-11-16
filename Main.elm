@@ -20,8 +20,9 @@ physics : Float -> Pod -> Pod
 physics t p = { p | pos <- V2.add p.pos <| V2.scale t p.vel }
 
 boost : { x:Int, y:Int } -> Pod -> Pod
-boost { x, y } p = { p | vel <- V2.vec2 (((toFloat x) / 5) + V2.getX p.vel)
-                                        (((toFloat y) / 5) + V2.getY p.vel) }
+boost { x, y } p = 
+  let scaleDir x = toFloat x / 5
+  in { p | vel <- p.vel `V2.add` V2.vec2 (scaleDir x) (scaleDir y) }
 
 gravityPull planets p = foldl (\planet pod -> { p | vel <- p.vel }) p planets {- finish this needs to be something like multiplying the old velocity by the vector between the pod and planet, which needs to be weighted by the mass of the planet -}
               
