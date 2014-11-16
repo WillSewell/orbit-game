@@ -14,7 +14,9 @@ defaultGame =
               , { pos=V2.vec2 150 200, mass=15 }] }
 
 step : (Float,{ x:Int, y:Int }) -> Game -> Game
-step (t,dir) g = { g | pod <- g.pod |> gravityPull g.planets |> boost dir |> physics t }
+step (t,dir) g = { g | pod <- g.pod |> gravityPull g.planets
+                                    |> boost dir 
+                                    |> physics t }
 
 physics : Float -> Pod -> Pod
 physics t p = { p | pos <- p.pos `V2.add` V2.scale t p.vel }
