@@ -14,11 +14,14 @@ defaultGame =
               , { pos=V2.vec2 150 200, mass=15 }] }
 
 step : (Float,{ x:Int, y:Int }) -> Game -> Game
-step (t,dir) g = { g | pod <- g.pod |> physics t }
+step (t,dir) g = { g | pod <- g.pod |> boost dir |> physics t }
 
 physics : Float -> Pod -> Pod
 physics t p = { p | pos <- V2.vec2 (V2.getX p.pos + t * V2.getX p.vel)
                                    (V2.getY p.pos + t * V2.getY p.vel) }
+
+boost : { x:Int, y:Int } -> Pod -> Pod
+boost { x, y } p = { p | vel <- V2.vec2 (toFloat x) (toFloat y) }
               
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
