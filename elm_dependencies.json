@@ -1,0 +1,12 @@
+{
+    "version": "0.1",
+    "summary": "A game where you are a escape pod and must avoid asteroids.",
+    "description": "The game includes simulated gravity, where you are pulled in towards the asteroids. You have limited fuel with which to escape.",
+    "license": "BSD3",
+    "exposed-modules": [],
+    "elm-version": "0.12.3",
+    "dependencies": {
+        "johnpmayer/elm-linear-algebra": "1.0.1"
+    },
+    "repository": "https://github.com/WillSewell/orbit-game.git"
+}
