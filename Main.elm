@@ -27,11 +27,11 @@ boost { x, y } p =
   in { p | vel <- p.vel `V2.add` V2.vec2 (scaleDir x) (scaleDir y) }
 
 gravityPullAll : [Planet] -> Pod -> Pod
-gravityPullAll planets p = foldl (gravityPull p) p planets
+gravityPullAll planets pod = foldl (gravityPull pod) pod planets
 
 gravityPull : Pod -> Planet -> Pod -> Pod
 gravityPull oldPod planet pod =
-  { pod | vel <- oldPod.vel `V2.sub` (V2.direction oldPod.pos planet.pos |> V2.scale 0.01) }
+  { pod | vel <- pod.vel `V2.sub` (V2.direction oldPod.pos planet.pos |> V2.scale 0.01) }
               
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
