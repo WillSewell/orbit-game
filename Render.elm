@@ -16,11 +16,11 @@ renderBg : (Float,Float) -> Form
 renderBg (w,h) = rect w h |> filled black
 
 renderPod : Pod -> Form
-renderPod p = square 10 |> outlined (solid (rgb 50 150 200)) 
+renderPod p = square 10 |> filled blue
                         |> move (V2.getX p.pos, V2.getY p.pos)
 
 renderPlanet : Planet -> Form
-renderPlanet p = circle p.mass |> outlined (solid (rgb 200 150 50))
+renderPlanet p = circle p.mass |> filled brown
                                |> move (V2.getX p.pos, V2.getY p.pos)
 
 renderExplosion : Pod -> Float -> Form
