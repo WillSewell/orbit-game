@@ -15,7 +15,7 @@ step (t,dir) g =
                                          |> physics t
                   else g.pod
      , state <- if collided then Ended else Running
-     , explosionSize <- g.explosionSize + if (g.explosionSize > 0 || collided) && g.explosionSize < 50 then 5 else 0 }
+     , explosionSize <- g.explosionSize + if (g.explosionSize > 0 || collided) && g.explosionSize < 50 then 15 else 0 }
 
 isCollided : [Planet] -> Pod -> Bool
 isCollided planets pod = any (\planet -> V2.distance planet.pos pod.pos < planet.mass + 5) planets
