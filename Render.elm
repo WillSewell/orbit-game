@@ -8,8 +8,12 @@ import Planet (Planet)
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets,explosionSize} =
   let (w,h) = (toFloat w', toFloat h')
-  in collage w' h' (renderPod pod :: renderExplosion pod explosionSize
-                                  :: map renderPlanet planets)
+  in collage w' h' (renderBg (w,h) :: renderPod pod
+                                   :: renderExplosion pod explosionSize
+                                   :: map renderPlanet planets)
+
+renderBg : (Float,Float) -> Form
+renderBg (w,h) = rect w h |> filled black
 
 renderPod : Pod -> Form
 renderPod p = square 10 |> outlined (solid (rgb 50 150 200)) 
