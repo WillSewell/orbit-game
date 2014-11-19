@@ -20,5 +20,6 @@ renderPlanet p = circle p.mass |> outlined (solid (rgb 200 150 50))
                                |> move (V2.getX p.pos, V2.getY p.pos)
 
 renderExplosion : Pod -> Float -> Form
-renderExplosion pod exploSize = circle exploSize |> outlined (solid (rgb 200 150 50))
-                                                 |> move (V2.getX pod.pos, V2.getY pod.pos)
+renderExplosion pod exploSize = circle exploSize 
+  |> gradient (radial (0,0) 10 (0,10) (exploSize) [(0, rgb 252 75 65), (1, rgba 228 199 0 0)])
+  |> move (V2.getX pod.pos, V2.getY pod.pos)
