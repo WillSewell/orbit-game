@@ -1,22 +1,28 @@
 import Keyboard
 import Window
+import Debug
 import Math.Vector2 as V2
 
-type Pod = { pos:V2.Vec2, vel:V2.Vec2 }
+type Pod = { pos:V2.Vec2, vel:V2.Vec2, collided:Bool }
 type Planet = { pos:V2.Vec2, mass:Float }
-type Game = { pod:Pod, planets:[Planet] }
+type Game = { pod:Pod, planets:[Planet], state:GameState }
+data GameState = Running | Ended
 
 defaultGame : Game
 defaultGame =
-  { pod     = { pos=V2.vec2 0 0, vel=V2.vec2 0 0 }
+  { pod     = { pos=V2.vec2 0 0, vel=V2.vec2 0 0, collided=False }
   , planets = [ { pos=V2.vec2 50 50, mass=5 }
               , { pos=V2.vec2 -100 0, mass=10 }
-              , { pos=V2.vec2 150 200, mass=15 }] }
+              , { pos=V2.vec2 150 200, mass=15 }]
+  , state   = Running }
 
 step : (Float,{ x:Int, y:Int }) -> Game -> Game
-step (t,dir) g = { g | pod <- g.pod |> gravityPullAll g.planets
-                                    |> boost dir 
-                                    |> physics t }
+step (t,dir) g = { g | pod <- if g.state == Running 
+                              then g.pod |> gravityPullAll g.planets
+                                         |> boost dir 
+                                         |> physics t
+                              else g.pod
+                     , state <- if isCollided g.planets g.pod then Ended else Running }
 
 physics : Float -> Pod -> Pod
 physics t p = { p | pos <- p.pos `V2.add` V2.scale t p.vel }
@@ -32,6 +38,9 @@ gravityPullAll planets pod = foldl (gravityPull pod) pod planets
 gravityPull : Pod -> Planet -> Pod -> Pod
 gravityPull oldPod planet pod =
   { pod | vel <- pod.vel `V2.sub` (V2.direction oldPod.pos planet.pos |> V2.scale 0.01) }
+
+isCollided : [Planet] -> Pod -> Bool
+isCollided planets pod = any (\planet -> V2.distance planet.pos pod.pos < planet.mass + 5) planets
               
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets} =
@@ -51,4 +60,3 @@ input = let delta = lift (\t -> t/20) (fps 24)
         in sampleOn delta (lift2 (,) delta Keyboard.arrows)
 
 main = lift2 render Window.dimensions (foldp step defaultGame input)
-  
