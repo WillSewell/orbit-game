@@ -8,10 +8,11 @@ import Planet (Planet)
 render : (Int,Int) -> Game -> Element
 render (w',h') {pod,planets,explosionSize} =
   let (w,h) = (toFloat w', toFloat h')
-  in collage w' h' ([renderBg (w,h), renderPod pod]
+  in collage w' (h' - 20) ([renderBg (w,h), renderPod pod]
                     ++ map renderPlanet planets
                     ++ map (renderBoost pod) pod.boostDir
                     ++ [renderExplosion pod explosionSize])
+     `below` asText ("Fuel: " ++ show pod.fuel)
 
 renderBg : (Float,Float) -> Form
 renderBg (w,h) = rect w h |> filled black
