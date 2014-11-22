@@ -4,12 +4,20 @@ import Math.Vector2 as V2
 import Pod (Pod)
 import Planet (Planet)
 
-type Game = { pod:Pod, planets:[Planet], state:GameState, explosionSize:Float }
+type Game = { pod:Pod
+            , planets:[Planet]
+            , state:GameState
+            , explosionSize:Float }
+
 data GameState = Running | Ended
 
 defaultGame : Game
 defaultGame =
-  { pod = { pos=V2.vec2 0 0, vel=V2.vec2 0 0, collided=False, boostDir=[] }
+  { pod = { pos=V2.vec2 0 0
+          , vel=V2.vec2 0 0
+          , collided=False
+          , boostDir=[]
+          , fuel=1000 }
   , planets = [ { pos=V2.vec2 50 50, mass=5 }
               , { pos=V2.vec2 -100 0, mass=10 }
               , { pos=V2.vec2 150 200, mass=15 }]
