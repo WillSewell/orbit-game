@@ -5,14 +5,14 @@ import State (Game(..))
 import Pod (Pod, BoostDir(..))
 import Planet (Planet)
 
-render : (Int,Int) -> (Game,Bool) -> Element
-render (w',h') (Game { pod, planets, explosionSize, futureStates },_) =
+render : (Int,Int) -> Game -> Element
+render (w',h') (Game { pod, planets, explosionSize, futureStates }) =
   let (w,h) = (toFloat w', toFloat h')
   in collage w' (h' - 20) ([renderBg (w,h), renderPod pod]
-                    ++ map (\(Game g) -> renderPod (D.watch "pod" (g.pod))) futureStates
-                    ++ map renderPlanet planets
-                    ++ map (renderBoost pod) pod.boostDir
-                    ++ [renderExplosion pod explosionSize])
+                           ++ map renderPod futureStates
+                           ++ map renderPlanet planets
+                           ++ map (renderBoost pod) pod.boostDir
+                           ++ [renderExplosion pod explosionSize])
      `below` asText ("Fuel: " ++ show pod.fuel)
 
 renderBg : (Float,Float) -> Form
@@ -20,7 +20,7 @@ renderBg (w,h) = rect w h |> filled black
 
 renderPod : Pod -> Form
 renderPod p = square 10 |> filled blue
-                        |> move (D.watch "podx" (V2.getX p.pos), V2.getY p.pos)
+                        |> move ((V2.getX p.pos), V2.getY p.pos)
 
 renderBoost : Pod -> BoostDir -> Form
 renderBoost pod boostDir = 

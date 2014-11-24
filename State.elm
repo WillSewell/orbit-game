@@ -8,7 +8,7 @@ data Game = Game { pod:Pod
                  , planets:[Planet]
                  , state:GameState
                  , explosionSize:Float
-                 , futureStates:[Game] }
+                 , futureStates:[Pod] }
           
 data GameState = Running | Ended
 

@@ -11,4 +11,4 @@ input : Signal (Float,{ x:Int, y:Int })
 input = let delta = lift (\t -> t/20) (fps 24)
         in sampleOn delta (lift2 (,) delta Keyboard.arrows)
 
-main = lift2 render Window.dimensions (foldp step (defaultGame, True) input)
+main = lift2 render Window.dimensions (foldp step defaultGame input)

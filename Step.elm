@@ -6,27 +6,26 @@ import Physics (..)
 import Pod (Pod, BoostDir(..))
 import Planet (Planet)
 
-step : (Float,{ x:Int, y:Int }) -> (Game, Bool) -> (Game, Bool)
-step (t,dir) (Game g, calcFutureStates) = 
+step : (Float, { x:Int, y:Int }) -> Game -> Game
+step (t,dir) (Game g) = 
   let collided = isCollided g.pod g.planets
       isExploding = (g.explosionSize > 0 || collided) && g.explosionSize < 50
-  in (Game { g | pod <- updatePod (Game g) dir <| D.watch "t" t
-               , state <- if collided || g.pod.fuel <= 0 then Ended else Running
-               , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
-               , futureStates <- if calcFutureStates then updateStates t (Game g) else [] }
-     , True)
+  in Game { g | pod <- case g.state of
+                          Running -> updatePod g.planets g.pod (t, dir)
+                          _ -> g.pod
+              , state <- if collided || g.pod.fuel <= 0 then Ended else Running
+              , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
+              , futureStates <- updateStates g.planets t g.pod }
 
-updateStates : Float -> Game -> [Game]
-updateStates t g = foldl (\tDir gs -> fst (step tDir ((head gs), False)) :: gs) [g] (repeat 10 (t*20,{x=0,y=0}))
+updateStates : [Planet] -> Float -> Pod -> [Pod]
+updateStates planets t pod = foldl (\tDir pods -> updatePod planets (head pods) tDir :: pods) [pod] (repeat 10 (t*20,{x=0,y=0}))
 
-updatePod : Game -> { x:Int, y:Int } -> Float -> Pod
-updatePod (Game g) dir t = case g.state of
-  Running -> g.pod |> gravityPullAll g.planets
-                   |> boost dir
-                   |> physics t
-                   |> updateBoostDir dir
-                   |> useFuel dir
-  _ -> g.pod
+updatePod : [Planet] -> Pod -> (Float, { x:Int, y:Int }) -> Pod
+updatePod planets pod (t, dir) = pod |> gravityPullAll planets
+                                     |> boost dir
+                                     |> physics t
+                                     |> updateBoostDir dir
+                                     |> useFuel dir
 
 isCollided : Pod -> [Planet] -> Bool
 isCollided pod = any (\planet -> V2.distance planet.pos pod.pos < planet.mass + 5)
