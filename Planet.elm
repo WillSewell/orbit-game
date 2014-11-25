@@ -1,5 +1,6 @@
 module Planet where
 
+import Util (Positioned)
 import Math.Vector2 as V2
 
-type Planet = { pos:V2.Vec2, mass:Float }
+type Planet = Positioned { mass:Float }
