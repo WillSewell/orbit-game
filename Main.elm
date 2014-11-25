@@ -2,7 +2,6 @@ module Main where
 
 import Keyboard
 import Window
-import Debug as D
 import State (defaultGame)
 import Render (render)
 import Step (step)
