@@ -1,10 +1,11 @@
 module Step where
 
-import Math.Vector2 as V2
+import Util (iterate)
 import State (Game(..), GameState(..), defaultGame)
 import Physics (..)
 import Pod (Pod, BoostDir(..))
 import Planet (Planet)
+import Math.Vector2 as V2
 
 step : (Float, { x:Int, y:Int }) -> Game -> Game
 step (t,dir) (Game g) = 
@@ -15,10 +16,11 @@ step (t,dir) (Game g) =
                           _ -> g.pod
               , state <- if collided || g.pod.fuel <= 0 then Ended else Running
               , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
-              , futureStates <- updateStates g.planets t g.pod }
+              , futureStates <- updateStates g.planets t g.pod 10 }
 
-updateStates : [Planet] -> Float -> Pod -> [Pod]
-updateStates planets t pod = foldl (\tDir pods -> updatePod planets (head pods) tDir :: pods) [pod] (repeat 10 (t*20,{x=0,y=0}))
+updateStates : [Planet] -> Float -> Pod -> Int -> [Pod]
+updateStates planets t pod =
+  iterate (\nextPod -> updatePod planets nextPod (t*20, { x=0,y=0 })) pod
 
 updatePod : [Planet] -> Pod -> (Float, { x:Int, y:Int }) -> Pod
 updatePod planets pod (t, dir) = pod |> gravityPullAll planets
