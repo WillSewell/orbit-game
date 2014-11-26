@@ -8,8 +8,7 @@ import Planet (Planet)
 render : (Int,Int) -> Game -> Element
 render (w',h') (Game { pod, planets, explosionSize, futureStates }) =
   let (w,h) = (toFloat w', toFloat h')
-  in collage w' (h' - 20) ([renderBg (w,h), renderPod pod]
-                           ++ map renderPod futureStates
+  in collage w' (h' - 20) ([renderBg (w,h), renderPod pod, renderTrejactory futureStates]
                            ++ map renderPlanet planets
                            ++ map (renderBoost pod) pod.boostDir
                            ++ [renderExplosion pod explosionSize])
@@ -20,7 +19,10 @@ renderBg (w,h) = rect w h |> filled black
 
 renderPod : Pod -> Form
 renderPod p = square 10 |> filled blue
-                        |> move ((V2.getX p.pos), V2.getY p.pos)
+                        |> move (V2.getX p.pos, V2.getY p.pos)
+
+renderTrejactory : [Pod] -> Form
+renderTrejactory pods = path (map (\pod -> (V2.getX pod.pos, V2.getY pod.pos)) pods) |> traced (dashed red)
 
 renderBoost : Pod -> BoostDir -> Form
 renderBoost pod boostDir = 
