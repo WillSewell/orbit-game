@@ -1,3 +1,4 @@
+{-| The main module for updating the state at each step of the game. -}
 module Step where
 
 import Util (iterate)
@@ -7,6 +8,7 @@ import Pod (Pod, BoostDir(..))
 import Planet (Planet)
 import Math.Vector2 as V2
 
+{-| The top level function that calls a different helper for each object. -}
 step : (Float, { x:Int, y:Int }) -> Game -> Game
 step (t,dir) (Game g) = 
   let collided = isCollided g.pod g.planets
@@ -18,10 +20,15 @@ step (t,dir) (Game g) =
               , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
               , futureStates <- updateStates g.planets t g.pod 10 }
 
+{-| Compute the future states of the pod.
+Assuming there is no change in direction. -}
 updateStates : [Planet] -> Float -> Pod -> Int -> [Pod]
 updateStates planets t pod =
   iterate (\nextPod -> updatePod planets nextPod (t*20, { x=0,y=0 })) pod
 
+{-| Update the pod by piping it through the various physics functions that
+update its velocity, then update its position by applying the main physics
+function. Finally, perform any other updates to its state. -}
 updatePod : [Planet] -> Pod -> (Float, { x:Int, y:Int }) -> Pod
 updatePod planets pod (t, dir) = pod |> gravityPullAll planets
                                      |> boost dir
@@ -29,13 +36,16 @@ updatePod planets pod (t, dir) = pod |> gravityPullAll planets
                                      |> updateBoostDir dir
                                      |> useFuel dir
 
+{-| Check if the pod intersects a planet. -}
 isCollided : Pod -> [Planet] -> Bool
 isCollided pod = any (\planet -> V2.distance planet.pos pod.pos < planet.mass + 5)
 
+{-| Set the boost direction depending on the movement arrow pressed. -}
 updateBoostDir : { x:Int, y:Int } -> Pod -> Pod
 updateBoostDir dir pod = { pod |
   boostDir <- (if dir.x == 1 then [L] else if dir.x == -1 then [R] else [])
               ++ (if dir.y == 1 then [U] else if dir.y == -1 then [D] else []) }
 
+{-| If the user is boosting, decrease the fuel. -}
 useFuel : { x:Int, y:Int } -> Pod -> Pod
 useFuel dir pod = { pod | fuel <- pod.fuel - abs dir.x - abs dir.y }
