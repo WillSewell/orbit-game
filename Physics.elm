@@ -20,7 +20,7 @@ boost { x, y } pod =
 gravityPullAll : [Planet] -> Pod -> Pod
 gravityPullAll planets pod = foldl (gravityPull pod) pod planets
 
-{-| Pull the pod towards a planet (update velocity in that direction.
+{-| Pull the pod towards a planet (update velocity in that direction).
 Strength of pull is based on the distance, and the mass of the planet. -}
 gravityPull : Pod -> Planet -> Pod -> Pod
 gravityPull oldPod planet pod =
