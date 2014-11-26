@@ -8,13 +8,13 @@ import Config (config)
 
 {-| Update the position of the pod based on velocity and position. -}
 physics : Float -> Pod -> Pod
-physics t p = { p | pos <- p.pos `V2.add` V2.scale t p.vel }
+physics t pod = { pod | pos <- pod.pos `V2.add` V2.scale t pod.vel }
 
 {-| Update the velocity in the direction the user is pressing. -}
 boost : { x:Int, y:Int } -> Pod -> Pod
-boost { x, y } p = 
+boost { x, y } pod = 
   let scaleDir x = toFloat x * config.boostPwrFactor
-  in { p | vel <- p.vel `V2.add` V2.vec2 (scaleDir x) (scaleDir y) }
+  in { pod | vel <- pod.vel `V2.add` V2.vec2 (scaleDir x) (scaleDir y) }
 
 {-| Loop through the planets, and have them pull the pod closer. -}
 gravityPullAll : [Planet] -> Pod -> Pod
