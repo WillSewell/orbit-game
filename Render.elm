@@ -4,6 +4,7 @@ import Math.Vector2 as V2
 import State (Game(..))
 import Pod (Pod, BoostDir(..))
 import Planet (Planet)
+import Util (vec2Pair)
 
 render : (Int,Int) -> Game -> Element
 render (w',h') (Game { pod, planets, explosionSize, futureStates }) =
@@ -18,16 +19,15 @@ renderBg : (Float,Float) -> Form
 renderBg (w,h) = rect w h |> filled black
 
 renderPod : Pod -> Form
-renderPod p = square 10 |> filled blue
-                        |> move (V2.getX p.pos, V2.getY p.pos)
+renderPod pod = square 10 |> filled blue
+                          |> move (vec2Pair pod.pos)
 
 renderTrejactory : [Pod] -> Form
-renderTrejactory pods = path (map (\pod -> (V2.getX pod.pos, V2.getY pod.pos)) pods) |> traced (dashed red)
+renderTrejactory pods = path (map (\pod -> (vec2Pair pod.pos)) pods) |> traced (dashed red)
 
 renderBoost : Pod -> BoostDir -> Form
 renderBoost pod boostDir = 
-  let oldX = V2.getX pod.pos
-      oldY = V2.getY pod.pos
+  let (oldX, oldY) = vec2Pair pod.pos
       offset = 10
       (newPos,rotDegrees) = case boostDir of
         U -> ((oldX, oldY - offset), 90)
@@ -40,10 +40,10 @@ renderBoost pod boostDir =
     |> rotate (degrees rotDegrees)
 
 renderPlanet : Planet -> Form
-renderPlanet p = circle p.mass |> filled brown
-                               |> move (V2.getX p.pos, V2.getY p.pos)
+renderPlanet planet = circle planet.mass |> filled brown
+                                         |> move (vec2Pair planet.pos)
 
 renderExplosion : Pod -> Float -> Form
 renderExplosion pod exploSize = circle exploSize 
   |> gradient (radial (0,0) 10 (0,10) (exploSize) [(0, rgb 252 75 65), (1, rgba 228 199 0 0)])
-  |> move (V2.getX pod.pos, V2.getY pod.pos)
+  |> move (vec2Pair pod.pos)

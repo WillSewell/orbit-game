@@ -12,3 +12,6 @@ iterate : (a -> a) -> a -> Int -> [a]
 iterate f x n = case n of
   0 -> []
   _ -> x :: (iterate f (f x) (n-1))
+
+vec2Pair : V2.Vec2 -> (Float, Float)
+vec2Pair point = (V2.getX point, V2.getY point)
