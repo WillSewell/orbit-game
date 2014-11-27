@@ -1,3 +1,4 @@
+
 {-| Module containing types that represent the current state of the game.
 Also contains the defaultGame (the start state). -}
 module State where
@@ -21,14 +22,14 @@ data GameState = Running | Ended
 {-| The configuration of the initial game state. -}
 defaultGame : Game
 defaultGame = Game
-  { pod = { pos=V2.vec2 0 0
+  { pod = { pos=V2.vec2 -100 0
           , vel=V2.vec2 0 0
           , collided=False
           , boostDir=[]
           , fuel=500 }
-  , planets = [ { pos=V2.vec2 50 50, mass=5 }
-              , { pos=V2.vec2 100 0, mass=10 }
-              , { pos=V2.vec2 150 200, mass=15 } ]
+  , planets = [ { pos=V2.vec2 50 50, mass=20, imgPath="../resources/images/planet_arid.png" }
+              , { pos=V2.vec2 100 0, mass=40, imgPath="../resources/images/planet_desolate.png" }
+              , { pos=V2.vec2 150 200, mass=60, imgPath="../resources/images/planet_frozen.png" } ]
   , state = Running
   , explosionSize = 0
   , futureStates = [] }

@@ -52,8 +52,9 @@ renderBoost pod boostDir =
 
 {-| Render a planet. -}
 renderPlanet : Planet -> Form
-renderPlanet planet = circle planet.mass |> filled brown
-                                         |> move (vec2Pair planet.pos)
+renderPlanet planet = image planet.mass planet.mass planet.imgPath 
+  |> toForm
+  |> move (vec2Pair planet.pos)
 
 {-| Render an explosion as an expanding red ball. -}
 renderExplosion : Pod -> Float -> Form

@@ -10,6 +10,9 @@ import Math.Vector2 as V2
 Useful for any object in the game world. -}
 type Positioned a = { a | pos:V2.Vec2 }
 
+{-| Records with an image. -}
+type HasImage a = { a | imgPath:String }
+
 {-| Inspired by the iterate from Haskell:
 http://hackage.haskell.org/package/base-4.7.0.1/docs/Prelude.html#v:iterate
 Has to be non-lazy so there is a stopping parameter n -}
