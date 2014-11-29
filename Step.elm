@@ -4,21 +4,22 @@ module Step where
 import Util (iterate)
 import State (Game(..), GameState(..), defaultGame)
 import Physics (..)
-import Pod (Pod, BoostDir(..))
+import Pod (Pod, BoostDir(..), showPod)
 import Planet (Planet)
 import Math.Vector2 as V2
+import Debug as D
 
 {-| The top level function that calls a different helper for each object. -}
 step : (Float, { x:Int, y:Int }) -> Game -> Game
 step (t,dir) (Game g) = 
   let collided = isCollided g.pod g.planets
       isExploding = (g.explosionSize > 0 || collided) && g.explosionSize < 50
-  in Game { g | pod <- case g.state of
+  in Game { g | pod <- D.watchSummary "pod" showPod <| case g.state of
                           Running -> updatePod g.planets g.pod (t, dir)
                           _ -> g.pod
               , state <- if collided || g.pod.fuel <= 0 then Ended else Running
               , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
-              , futureStates <- updateStates g.planets t g.pod 10 }
+              , futureStates <- D.watch "pods" <| updateStates g.planets t g.pod 10 }
 
 {-| Compute the future states of the pod.
 Assuming there is no change in direction. -}

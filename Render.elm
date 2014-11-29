@@ -6,6 +6,7 @@ import State (Game(..))
 import Pod (Pod, BoostDir(..))
 import Planet (Planet)
 import Util (vec2Pair)
+import Debug as D
 
 {-| The main render function that renders the state by creating a
 collage in the window dimensions. -}
@@ -27,7 +28,7 @@ renderBg (w,h) = rect w h |> filled black
 {-| Render the pod. -}
 renderPod : Pod -> Form
 renderPod pod = square 10 |> filled blue
-                          |> move (vec2Pair pod.pos)
+                          |> move (D.watch "podx" (V2.getX pod.pos), D.watch "pody" (V2.getY pod.pos))
 
 {-| Create a dashed line from the future pod states that is its trejectory. -}
 renderTrejactory : [Pod] -> Form
