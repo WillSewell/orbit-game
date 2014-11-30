@@ -15,6 +15,7 @@ type Pod = Positioned { vel:V2.Vec2
 {-| Represents the current boost direction. -}
 data BoostDir = U | D | L | R
 
+{-| String representation of a pod. -}
 showPod : Pod -> String
 showPod pod = "{ pos=" ++ (show <| vec2Pair pod.pos) ++ (S.fromList ['\n'])
                ++ ", vel=" ++ (show <| vec2Pair pod.vel) ++ (S.fromList ['\n'])
