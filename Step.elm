@@ -14,18 +14,18 @@ step : (Float, { x:Int, y:Int }) -> Game -> Game
 step (t,dir) (Game g) = 
   let collided = isCollided g.pod g.planets
       isExploding = (g.explosionSize > 0 || collided) && g.explosionSize < 50
-  in Game { g | pod <- D.watchSummary "pod" showPod <| case g.state of
-                          Running -> updatePod g.planets g.pod (t, dir)
+  in Game { g | pod <- case g.state of
+                          Running -> updatePod g.planets g.pod ({-D.watch "t"-} t, dir)
                           _ -> g.pod
               , state <- if collided || g.pod.fuel <= 0 then Ended else Running
               , explosionSize <- g.explosionSize + if isExploding then 15 else 0 
-              , futureStates <- D.watch "pods" <| updateStates g.planets t g.pod 10 }
+              , futureStates <- updateStates g.planets t g.pod 50 }
 
 {-| Compute the future states of the pod.
 Assuming there is no change in direction. -}
 updateStates : [Planet] -> Float -> Pod -> Int -> [Pod]
 updateStates planets t pod =
-  iterate (\nextPod -> updatePod planets nextPod (t*20, { x=0,y=0 })) pod
+  iterate (\nextPod -> updatePod planets nextPod (t, { x=0,y=0 })) pod
 
 {-| Update the pod by piping it through the various physics functions that
 update its velocity, then update its position by applying the main physics

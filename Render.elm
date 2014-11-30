@@ -3,7 +3,7 @@ module Render where
 
 import Math.Vector2 as V2
 import State (Game(..))
-import Pod (Pod, BoostDir(..))
+import Pod (Pod, BoostDir(..), showPod)
 import Planet (Planet)
 import Util (vec2Pair)
 import Debug as D
@@ -14,7 +14,7 @@ render : (Int,Int) -> Game -> Element
 render (w',h') (Game { pod, planets, explosionSize, futureStates }) =
   let (w,h) = (toFloat w', toFloat h')
      {- render each component with a helper function and add it to the list -}
-  in collage w' (h' - 20) ([renderBg (w,h), renderPod pod, renderTrejactory futureStates]
+  in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrejactory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
                            ++ map renderPlanet planets
                            ++ map (renderBoost pod) pod.boostDir
                            ++ [renderExplosion pod explosionSize])
@@ -28,7 +28,7 @@ renderBg (w,h) = rect w h |> filled black
 {-| Render the pod. -}
 renderPod : Pod -> Form
 renderPod pod = square 10 |> filled blue
-                          |> move (D.watch "podx" (V2.getX pod.pos), D.watch "pody" (V2.getY pod.pos))
+                          |> move (vec2Pair pod.pos)
 
 {-| Create a dashed line from the future pod states that is its trejectory. -}
 renderTrejactory : [Pod] -> Form
