@@ -6,6 +6,10 @@ module State where
 import Math.Vector2 as V2
 import Pod (Pod)
 import Planet (Planet)
+import Http
+import Signal
+import Json as J
+import Dict
 
 {-| Represents the current state of the game. -}
 data Game = Game { pod:Pod
@@ -33,3 +37,32 @@ defaultGame = Game
   , state = Running
   , explosionSize = 0
   , futureStates = [] }
+
+{-getLevel : Int -> Signal Game
+getLevel levelNum = Http.sendGet (Signal.constant <| "worlds/" ++ show levelNum ++ ".json")-}
+
+
+handleResult : Http.Response String -> Maybe { pod : { pos : V2.Vec2 }}
+handleResult response =
+  case response of
+    Http.Success string ->
+      case J.fromString string of
+        Just (J.Object fields) -> unpackPod fields
+                                  |> (\maybepod -> case maybepod of
+                                       Just pod -> Just { pod = pod }
+                                       _ -> Nothing)
+        _ -> Nothing
+    _ -> Nothing
+
+unpackPod fields = Dict.get "pod" fields 
+                   |> (\maybepod -> case maybepod of
+                        Just (J.Object pod) -> unpackPos pod
+                        _ -> Nothing)
+                   |> (\maybepos -> case maybepos of
+                        Just pos -> Just { pos = pos }
+                        _ -> Nothing)
+
+unpackPos pod = (Dict.get "xpos" pod, Dict.get "ypos" pod) 
+                |> (\fields -> case fields of
+                     (Just (J.Number xpos), Just (J.Number ypos)) -> Just (V2.vec2 xpos ypos)
+                     _ -> Nothing)
