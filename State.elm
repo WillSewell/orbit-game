@@ -1,4 +1,3 @@
-
 {-| Module containing types that represent the current state of the game.
 Also contains the defaultGame (the start state). -}
 module State where
@@ -26,14 +25,12 @@ data GameState = Running | Ended
 {-| The configuration of the initial game state. -}
 defaultGame : Game
 defaultGame = Game
-  { pod = { pos=V2.vec2 -100 0
+  { pod = { pos=V2.vec2 0 0
           , vel=V2.vec2 0 0
           , collided=False
           , boostDir=[]
           , fuel=500 }
-  , planets = [ { pos=V2.vec2 50 50, mass=20, imgPath="../resources/images/planet_arid.png" }
-              , { pos=V2.vec2 100 0, mass=40, imgPath="../resources/images/planet_desolate.png" }
-              , { pos=V2.vec2 150 200, mass=60, imgPath="../resources/images/planet_frozen.png" } ]
+  , planets = []
   , state = Running
   , explosionSize = 0
   , futureStates = [] }
@@ -42,27 +39,64 @@ defaultGame = Game
 getLevel levelNum = Http.sendGet (Signal.constant <| "worlds/" ++ show levelNum ++ ".json")-}
 
 
-handleResult : Http.Response String -> Maybe { pod : { pos : V2.Vec2 }}
+handleResult : Http.Response String -> Maybe Game
 handleResult response =
   case response of
     Http.Success string ->
       case J.fromString string of
-        Just (J.Object fields) -> unpackPod fields
-                                  |> (\maybepod -> case maybepod of
-                                       Just pod -> Just { pod = pod }
-                                       _ -> Nothing)
+        Just (J.Object fields) -> unpackGame fields
         _ -> Nothing
     _ -> Nothing
 
-unpackPod fields = Dict.get "pod" fields 
-                   |> (\maybepod -> case maybepod of
-                        Just (J.Object pod) -> unpackPos pod
-                        _ -> Nothing)
-                   |> (\maybepos -> case maybepos of
-                        Just pos -> Just { pos = pos }
+unpackGame : Dict.Dict String J.Value -> Maybe Game
+unpackGame fields = (Dict.get "pod" fields, Dict.get "planets" fields) 
+                   |> (\maybefields -> case maybefields of
+                        ( Just (J.Object pod)
+                        , Just (J.Array  planets)) ->
+                          (unpackPod pod, unpackPlanets planets) 
+                          |> (\unpackResults -> case unpackResults of
+                               (Just pod, Just planets) -> 
+                                 Just (Game { pod = pod
+                                            , planets = planets
+                                            , state = Running
+                                            , explosionSize = 0
+                                            , futureStates = [] })
+                               _ -> Nothing)
                         _ -> Nothing)
 
-unpackPos pod = (Dict.get "xpos" pod, Dict.get "ypos" pod) 
+unpackPod : Dict.Dict String J.Value -> Maybe Pod
+unpackPod pod = (Dict.get "xpos" pod, Dict.get "ypos" pod, Dict.get "fuel" pod) 
                 |> (\fields -> case fields of
-                     (Just (J.Number xpos), Just (J.Number ypos)) -> Just (V2.vec2 xpos ypos)
+                     ( Just (J.Number xpos)
+                     , Just (J.Number ypos)
+                     , Just (J.Number fuel)) ->
+                         Just { pos = V2.vec2 xpos ypos
+                              , vel = V2.vec2 0 0
+                              , collided = False
+                              , boostDir = []
+                              , fuel = round fuel }
+                     _ -> Nothing)
+
+unpackPlanets : [J.Value] -> Maybe [Planet]
+unpackPlanets planets = foldr
+  (\(J.Object planet) acc -> case acc of
+    Just list -> unpackPlanet planet |> (\maybePlanet -> case maybePlanet of
+      Just planet -> Just (planet :: list)
+      _ -> Nothing)
+    _ -> Nothing) 
+  (Just []) planets
+
+unpackPlanet : Dict.Dict String J.Value -> Maybe Planet
+unpackPlanet planet = ( Dict.get "xpos" planet
+                      , Dict.get "ypos" planet
+                      , Dict.get "mass" planet
+                      , Dict.get "imgPath" planet) 
+                |> (\fields -> case fields of
+                     ( Just (J.Number xpos)
+                     , Just (J.Number ypos)
+                     , Just (J.Number mass)
+                     , Just (J.String imgPath)) ->
+                         Just { pos = V2.vec2 xpos ypos
+                              , mass = round mass
+                              , imgPath = imgPath }
                      _ -> Nothing)
