@@ -1,10 +1,17 @@
+module WorldReader where
+
+import Math.Vector2 as V2
+import State (Game(..), GameState(..))
+import Pod (Pod)
+import Planet (Planet)
 import Http
 import Signal
 import Json as J
 import Dict
 
-getLevel : Int -> Signal Game
+getLevel : Int -> Signal (Maybe Game)
 getLevel levelNum = Http.sendGet (Signal.constant <| "worlds/" ++ show levelNum ++ ".json")
+                    |> lift handleResult
 
 handleResult : Http.Response String -> Maybe Game
 handleResult response =
