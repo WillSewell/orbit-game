@@ -1,3 +1,6 @@
+{-| Module for requesting for world files stored in JSON format,
+these are then converted into the world datatype. -}
+
 module WorldReader where
 
 import Math.Vector2 as V2
@@ -9,12 +12,14 @@ import Signal
 import Json as J
 import Dict
 
+{-| Request the level denoted by a number. Unpack the JSON file into the game datatype. -}
 getLevel : Int -> Signal (Maybe Game)
 getLevel levelNum = Http.sendGet (Signal.constant <| "worlds/" ++ show levelNum ++ ".json")
                     |> lift handleResult
 
+{-| Take the response signal, and convert it into a Game. -}
 handleResult : Http.Response String -> Maybe Game
-handleResult response =
+handleResult response = 
   case response of
     Http.Success string ->
       case J.fromString string of
@@ -22,6 +27,7 @@ handleResult response =
         _ -> Nothing
     _ -> Nothing
 
+{-| Convert the game JSON into a Game Type -}
 unpackGame : Dict.Dict String J.Value -> Maybe Game
 unpackGame fields = (Dict.get "pod" fields, Dict.get "planets" fields) 
                    |> (\maybefields -> case maybefields of
@@ -38,6 +44,7 @@ unpackGame fields = (Dict.get "pod" fields, Dict.get "planets" fields)
                                _ -> Nothing)
                         _ -> Nothing)
 
+{-| Convert the pod. -}
 unpackPod : Dict.Dict String J.Value -> Maybe Pod
 unpackPod pod = (Dict.get "xpos" pod, Dict.get "ypos" pod, Dict.get "fuel" pod) 
                 |> (\fields -> case fields of
@@ -51,6 +58,7 @@ unpackPod pod = (Dict.get "xpos" pod, Dict.get "ypos" pod, Dict.get "fuel" pod)
                               , fuel = round fuel }
                      _ -> Nothing)
 
+{-| Convert the planets. -}
 unpackPlanets : [J.Value] -> Maybe [Planet]
 unpackPlanets planets = foldr
   (\(J.Object planet) acc -> case acc of
@@ -60,6 +68,7 @@ unpackPlanets planets = foldr
     _ -> Nothing) 
   (Just []) planets
 
+{-| Convert a single planet. -}
 unpackPlanet : Dict.Dict String J.Value -> Maybe Planet
 unpackPlanet planet = ( Dict.get "xpos" planet
                       , Dict.get "ypos" planet
