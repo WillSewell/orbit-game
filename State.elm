@@ -17,17 +17,3 @@ data Game = Game { pod:Pod
 
 {-| Whether the game is running, or in another state. -}
 data GameState = Running | Ended
-
-{-| The configuration of the initial game state. -}
-defaultGame : Game
-defaultGame = Game
-  { pod = { pos=V2.vec2 0 0
-          , vel=V2.vec2 0 0
-          , collided=False
-          , boostDir=[]
-          , fuel=500 }
-  , planets = []
-  , state = Running
-  , explosionSize = 0
-  , futureStates = [] }
-
