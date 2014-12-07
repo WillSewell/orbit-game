@@ -1,6 +1,9 @@
 {-| Module for storing game constants. -}
 module Config where
 
+import State (Game(..), GameState(..))
+import Math.Vector2 as V2
+
 {-| Record of all game constants. -}
 type Config = { boostPwrFactor:Float, gravPwrFactor:Float }
 
