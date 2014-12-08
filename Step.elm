@@ -2,7 +2,8 @@
 module Step where
 
 import Util (iterate)
-import State (Game(..), GameState(..), defaultGame)
+import Config (defaultGame)
+import State (Game(..), GameState(..))
 import Physics (..)
 import Pod (Pod, BoostDir(..), showPod)
 import Planet (Planet)
