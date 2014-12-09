@@ -6,9 +6,7 @@
     "exposed-modules": [],
     "elm-version": "0.12.3",
     "dependencies": {
-        "johnpmayer/elm-linear-algebra": "1.0.1",
-	"lambdatoast/elm-json": "0.3.4",
-        "piotrcyr/elm-filereader": "0.2"
+        "johnpmayer/elm-linear-algebra": "1.0.1"
     },
     "repository": "https://github.com/WillSewell/orbit-game.git"
 }
