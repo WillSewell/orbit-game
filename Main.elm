@@ -30,11 +30,11 @@ input' : Signal Update
 input' = merge (Reset <~ getLevel 1) (NormalInput <~ input)
 
 {-| Load in a new game if a new game event is triggered, else perform normal step. -}
-update' : Update -> Maybe Game -> Maybe Game
-update' upd game = case upd of
+update : Update -> Maybe Game -> Maybe Game
+update upd game = case upd of
   Reset (Just g) -> Just g
   Reset Nothing -> game
   NormalInput i -> Maybe.map (step i) game
 
 {-| Run the game - see module doc. -}
-main = lift2 render Window.dimensions (foldp update' (Just defaultGame) input')
+main = lift2 render Window.dimensions (foldp update (Just defaultGame) input')
