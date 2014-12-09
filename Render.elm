@@ -10,22 +10,22 @@ import Debug as D
 
 {-| The main render function that renders the state by creating a
 collage in the window dimensions. -}
-render : (Int,Int) -> Maybe Game -> Element
-render (w',h') game = case game of
-    Just (Game { pod, planets, explosionSize, futureStates }) ->
-  let (w,h) = (toFloat w', toFloat h')
-     {- render each component with a helper function and add it to the list -}
-  in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrejactory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
-                           ++ map renderPlanet planets
-                           ++ map (renderBoost pod) pod.boostDir
-                           ++ [renderExplosion pod explosionSize])
+render : (Int, Int) -> Maybe Game -> Element
+render (w', h') game = case game of
+  Just (Game { pod, planets, explosionSize, futureStates }) ->
+    let (w, h) = (toFloat w', toFloat h')
+    {- render each component with a helper function and add it to the list -}
+    in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrejactory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
+                             ++ map renderPlanet planets
+                             ++ map (renderBoost pod) pod.boostDir
+                             ++ [renderExplosion pod explosionSize])
      {- render game stats -}
      `below` asText ("Fuel: " ++ show pod.fuel)
-    Nothing -> asText "ERROR"
+  Nothing -> asText "ERROR"
 
 {-| Create a black background. -}
-renderBg : (Float,Float) -> Form
-renderBg (w,h) = rect w h |> filled black
+renderBg : (Float, Float) -> Form
+renderBg (w, h) = rect w h |> filled black
 
 {-| Render the pod. -}
 renderPod : Pod -> Form
@@ -65,5 +65,5 @@ renderPlanet planet =
 {-| Render an explosion as an expanding red ball. -}
 renderExplosion : Pod -> Float -> Form
 renderExplosion pod exploSize = circle exploSize 
-  |> gradient (radial (0,0) 10 (0,10) (exploSize) [(0, rgb 252 75 65), (1, rgba 228 199 0 0)])
+  |> gradient (radial (0, 0) 10 (0, 10) exploSize [(0, rgb 252 75 65), (1, rgba 228 199 0 0)])
   |> move (vec2Pair pod.pos)
