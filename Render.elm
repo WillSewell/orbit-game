@@ -15,7 +15,7 @@ render (w', h') game = case game of
   Just (Game { pod, planets, explosionSize, futureStates }) ->
     let (w, h) = (toFloat w', toFloat h')
     {- render each component with a helper function and add it to the list -}
-    in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrejactory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
+    in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrajectory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
                              ++ map renderPlanet planets
                              ++ map (renderBoost pod) pod.boostDir
                              ++ [renderExplosion pod explosionSize])
@@ -32,9 +32,9 @@ renderPod : Pod -> Form
 renderPod pod = square 10 |> filled blue
                           |> move (vec2Pair pod.pos)
 
-{-| Create a dashed line from the future pod states that is its trejectory. -}
-renderTrejactory : [Pod] -> Form
-renderTrejactory pods = path (map (\pod -> (vec2Pair pod.pos)) pods) |> traced (dashed red)
+{-| Create a dashed line from the future pod states that is its trajectory. -}
+renderTrajectory : [Pod] -> Form
+renderTrajectory pods = path (map (\pod -> (vec2Pair pod.pos)) pods) |> traced (dashed red)
 
 {-| Render a boost a boost based on the direction.
 This function should be called multiple times,

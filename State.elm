@@ -12,7 +12,7 @@ data Game = Game { pod:Pod
                  , state:GameState
                  , explosionSize:Float
                    {- future states of the pod provided direction is not changed 
-                      used to compute the trejectory. -}
+                      used to compute the trajectory. -}
                  , futureStates:[Pod] }
 
 {-| Whether the game is running, or in another state. -}
