@@ -34,7 +34,8 @@ renderPod pod = square 10 |> filled blue
 
 {-| Create a dashed line from the future pod states that is its trajectory. -}
 renderTrajectory : [Pod] -> Form
-renderTrajectory pods = path (map (\pod -> (vec2Pair pod.pos)) pods) |> traced (dashed red)
+renderTrajectory pods = path (map (\pod -> (vec2Pair pod.pos)) pods)
+                        |> traced (dashed (rgb 44 167 176))
 
 {-| Render a boost a boost based on the direction.
 This function should be called multiple times,
