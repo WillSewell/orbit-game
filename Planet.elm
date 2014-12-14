@@ -7,9 +7,14 @@ import Math.Vector2 as V2
 import String as S
 
 {-| Represents a planet. -}
-type Planet = HasImage (Positioned { mass:Int })
+type alias Planet = HasImage (Positioned { mass : Int })
 
 {-| String representation of a planet. -}
 showPlanet : Planet -> String
-showPlanet planet = "{ pos=" ++ (show <| vec2Pair planet.pos) ++ (S.fromList ['\n'])
-                    ++ ", mass=" ++ show planet.mass ++ " }"
+showPlanet planet = "{ pos=" ++ (toString <| vec2Pair planet.pos)
+                    ++ (S.fromList ['\n'])
+                    ++ ", mass=" ++ toString planet.mass ++ " }"
+
+planet pos mass imgPath = { pos = pos
+                         , imgPath = imgPath
+                         , mass = mass }

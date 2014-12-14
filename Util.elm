@@ -5,18 +5,19 @@ PRs. -}
 module Util where
 
 import Math.Vector2 as V2
+import List (..)
 
 {-| Used to give a type a position field.
 Useful for any object in the game world. -}
-type Positioned a = { a | pos:V2.Vec2 }
+type alias Positioned a = { a | pos : V2.Vec2 }
 
 {-| Records with an image. -}
-type HasImage a = { a | imgPath:String }
+type alias HasImage a = { a | imgPath : String }
 
 {-| Inspired by the iterate from Haskell:
 http://hackage.haskell.org/package/base-4.7.0.1/docs/Prelude.html#v:iterate
 Has to be non-lazy so there is a stopping parameter n -}
-iterate : (a -> a) -> a -> Int -> [a]
+iterate : (a -> a) -> a -> Int -> List a
 iterate f x n = case n of
   0 -> []
   _ -> x :: (iterate f (f x) (n-1))

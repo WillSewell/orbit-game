@@ -5,6 +5,7 @@ import Math.Vector2 as V2
 import Pod (Pod)
 import Planet (Planet)
 import Config (config)
+import List (..)
 
 {-| Update the position of the pod based on velocity and position. -}
 physics : Float -> Pod -> Pod
@@ -17,7 +18,7 @@ boost { x, y } pod =
   in { pod | vel <- pod.vel `V2.add` V2.vec2 (scaleDir x) (scaleDir y) }
 
 {-| Loop through the planets, and have them pull the pod closer. -}
-gravityPullAll : [Planet] -> Pod -> Pod
+gravityPullAll : List Planet -> Pod -> Pod
 gravityPullAll planets pod = foldl (gravityPull pod) pod planets
 
 {-| Pull the pod towards a planet (update velocity in that direction).
@@ -27,4 +28,4 @@ gravityPull oldPod planet pod =
   let distance = V2.distance pod.pos planet.pos in
   { pod | vel <- pod.vel `V2.sub` (V2.direction oldPod.pos planet.pos
                                    |> V2.scale ((1/(distance/150))
-                                                * (planet.mass * config.gravPwrFactor))) }
+                                                * ( toFloat planet.mass * config.gravPwrFactor))) }

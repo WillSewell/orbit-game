@@ -9,21 +9,23 @@ import Render (render)
 import Step (step)
 import State (Game)
 import WorldReader (getLevel)
+import Signal (..)
+import Time
 
 {-| Represents possible update values. -}
-data Update
+type Update
     = Reset (Maybe Game)
     | NormalInput Input
 
 {-| Input from the user and time delta between frames. -}
-type Input = (Float, { x:Int, y:Int })
+type alias Input = (Float, { x : Int, y : Int })
 
 {-| input is a signal consisting of the pressed arrow keys, and the delta
 - the time between frames. -}
 input : Signal Input
-input = let delta = lift (\t -> t/20) (fps 24)
+input = let delta = map (\t -> t/20) (Time.fps 24)
             world = getLevel 1
-        in sampleOn delta (lift2 (,) delta Keyboard.arrows)
+        in sampleOn delta (map2 (,) delta Keyboard.arrows)
 
 {-| Combine the input from the user, and input from loading a new level. -}
 input' : Signal Update
@@ -37,4 +39,4 @@ update upd game = case upd of
   NormalInput i -> Maybe.map (step i) game
 
 {-| Run the game - see module doc. -}
-main = lift2 render Window.dimensions (foldp update (Just defaultGame) input')
+main = map2 render Window.dimensions (foldp update (Just defaultGame) input')
