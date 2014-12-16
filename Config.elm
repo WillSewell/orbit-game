@@ -14,7 +14,7 @@ type alias Config = { boostPwrFactor : Float
 config : Config
 config = { boostPwrFactor = 0.02
          , gravPwrFactor = 0.0001
-         , levels = [ "worlds/1.json" ] 
+         , levels = [ "worlds/1.json", "worlds/2.json" ] 
          , maxExplosionSize = 15 }
 
 {-| Dummy configuration used before any game file is loaded. -}
@@ -27,5 +27,6 @@ defaultGame =
           , fuel=500 }
   , planets = []
   , state = Running
+  , status = ""
   , explosionSize = config.maxExplosionSize
   , futureStates = [] }

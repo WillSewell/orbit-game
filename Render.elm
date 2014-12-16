@@ -15,18 +15,17 @@ import Debug as D
 
 {-| The main render function that renders the state by creating a
 collage in the window dimensions. -}
-render : (Int, Int) -> Maybe Game -> Element
-render (w', h') game = case game of
-  Just { pod, planets, explosionSize, futureStates } ->
+render : (Int, Int) -> Game -> Element
+render (w', h') { pod, planets, status, futureStates, explosionSize } =
     let (w, h) = (toFloat w', toFloat h')
-    {- render each component with a helper function and add it to the list -}
-    in collage w' (h' - 20) ([renderBg (w,h), renderPod ({-D.watchSummary "pod" showPod-} pod), renderTrajectory ({-D.watchSummary "pods" (\pods -> show <| map showPod pods)-} futureStates)]
+    --render each component with a helper function and add it to the list
+    in collage w' (h' - 20) ([renderBg (w,h), renderPod pod, renderTrajectory futureStates]
                              ++ map renderPlanet planets
                              ++ map (renderBoost pod) pod.boostDir
                              ++ [renderExplosion pod explosionSize])
      {- render game stats -}
      `below` asText ("Fuel: " ++ toString pod.fuel)
-  Nothing -> asText "ERROR"
+     `below` asText status
 
 {-| Create a black background. -}
 renderBg : (Float, Float) -> Form

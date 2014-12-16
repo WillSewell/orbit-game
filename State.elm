@@ -10,13 +10,14 @@ import Planet (Planet)
 type alias Game = { pod : Pod
                   , planets : List Planet
                   , state : GameState
-                  {- future states of the pod provided direction is not changed
-                  used to compute the trajectory. -}
+                  , status : String
                   , explosionSize : Int
+                  -- future states of the pod provided direction is not changed
+                  -- used to compute the trajectory.
                   , futureStates : List Pod }
 
 {-| Whether the game is running, or in another state. -}
 type GameState = Running | Ended
 
 game : Pod -> List Planet -> Game
-game pod planets = Game pod planets Running 0 []
+game pod planets = Game pod planets Running "" 0 []
