@@ -3,7 +3,7 @@ module Main where
 
 import Window
 import Result
-import Signal (..)
+import Signal
 import Input (Update(..), input)
 import Config (defaultGame)
 import Render (render)
@@ -18,4 +18,4 @@ update upd game = case upd of
   NormalInput i -> step i game
 
 {-| Run the game - see module doc. -}
-main = map2 render Window.dimensions (foldp update defaultGame input)
+main = Signal.map2 render Window.dimensions (Signal.foldp update defaultGame input)
