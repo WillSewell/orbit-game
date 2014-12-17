@@ -8,17 +8,25 @@ import State (Game, GameState(..), game)
 import Pod (Pod, pod)
 import Planet (Planet, planet)
 import Http
+import Signal ((<~))
 import Signal
 import Json.Decode ((:=))
 import Json.Decode as J
 import Debug as D
 
-{-| Request the level denoted by a number. Unpack the JSON file into the game
-datatype. -}
-getLevel : Int -> Signal (Result String Game)
-getLevel levelNum =
-  Http.sendGet (Signal.constant <| (D.watch "world" <| ("worlds/" ++ toString (D.watch "level" levelNum) ++ ".json")))
-  |> Signal.map handleResult
+{-| Request the level denoted by a number. It's a signal transformer that takes a
+keypress, and if it's numerical, loads the level -- otherwise defaults to level 1.
+Level is loaded by unpacking the JSON file into the game datatype. -}
+getLevel : Signal.Signal (Result String Int) -> Signal.Signal (Result String Game)
+getLevel levelSignal = handleResult <~ (Http.sendGet 
+                                         (genLevelRequestUri <~ levelSignal))
+
+{-| Build the level URI based on a level number which may be an error. -}
+genLevelRequestUri : Result String Int -> String
+genLevelRequestUri lvl = (case lvl of
+    Ok lvl -> toString lvl
+    _ -> "1")
+  |> \lvlStr -> "worlds/" ++ lvlStr ++ ".json"
 
 {-| Take the response signal, and convert it into a Game. -}
 handleResult : Http.Response String -> Result String Game

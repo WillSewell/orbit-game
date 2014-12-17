@@ -23,9 +23,9 @@ render (w', h') { pod, planets, status, futureStates, explosionSize } =
                              ++ map renderPlanet planets
                              ++ map (renderBoost pod) pod.boostDir
                              ++ [renderExplosion pod explosionSize])
-     {- render game stats -}
-     `below` asText ("Fuel: " ++ toString pod.fuel)
-     `below` asText status
+     -- render game stats
+     `below` (asText ("Fuel: " ++ toString pod.fuel)
+              `beside` asText ("         Status: " ++ status))
 
 {-| Create a black background. -}
 renderBg : (Float, Float) -> Form

@@ -7,6 +7,10 @@ import Signal ((<~))
 import Signal
 import State (Game)
 import WorldReader (getLevel)
+import Char
+import String
+import Util (isOk)
+import Debug as D
 
 {-| Represents possible update values. -}
 type Update
@@ -24,4 +28,11 @@ controls = let delta = Signal.map (\t -> t/20) (Time.fps 24)
 
 {-| Combine the input from the user, and input from loading a new level. -}
 input : Signal.Signal Update
-input = Signal.merge (Reset <~ getLevel 2) (NormalInput <~ controls)
+input = Signal.merge (Reset <~ getLevel numKeyPressed) (NormalInput <~ controls)
+
+{-| Get a number representing the numerical key pressed. -}
+numKeyPressed : Signal.Signal (Result String Int)
+numKeyPressed = Signal.keepIf isOk (Ok 1) <| String.toInt
+                                          << String.fromChar
+                                          << Char.fromCode
+                                          <~ Keyboard.lastPressed
