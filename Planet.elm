@@ -15,6 +15,8 @@ showPlanet planet = "{ pos=" ++ (toString <| vec2Pair planet.pos)
                     ++ (S.fromList ['\n'])
                     ++ ", mass=" ++ toString planet.mass ++ " }"
 
+{-| Function for generating a new pod.
+The type constructor does not work because it uses extensible records. -}
 planet pos mass imgPath = { pos = pos
-                         , imgPath = imgPath
-                         , mass = mass }
+                          , imgPath = imgPath
+                          , mass = mass }
