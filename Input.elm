@@ -26,13 +26,13 @@ controls : Signal.Signal Input
 controls = let delta = Signal.map (\t -> t/20) (Time.fps 24)
            in Signal.sampleOn delta (Signal.map2 (,) delta Keyboard.arrows)
 
-{-| Combine the input from the user, and input from loading a new level. -}
-input : Signal.Signal Update
-input = Signal.merge (Reset <~ getLevel numKeyPressed) (NormalInput <~ controls)
-
 {-| Get a number representing the numerical key pressed. -}
 numKeyPressed : Signal.Signal (Result String Int)
 numKeyPressed = Signal.keepIf isOk (Ok 1) <| String.toInt
                                           << String.fromChar
                                           << Char.fromCode
                                           <~ Keyboard.lastPressed
+
+{-| Combine the input from the user, and input from loading a new level. -}
+input : Signal.Signal Update
+input = Signal.merge (Reset <~ getLevel numKeyPressed) (NormalInput <~ controls)
