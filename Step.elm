@@ -14,7 +14,7 @@ import Debug as D
 
 {-| The top level function that calls a different helper for each object. -}
 step : Input -> Game -> Game
-step (t,dir) g =
+step (t, dir) g =
   let collided = isCollided g.pod g.planets
       isExploding = (g.explosionSize > 0 || collided) && g.explosionSize < 50
   in { g | pod <- case g.state of
@@ -53,5 +53,5 @@ updateBoostDir dir pod = { pod |
               ++ (if dir.y == 1 then [U] else if dir.y == -1 then [D] else []) }
 
 {-| If the user is boosting, decrease the fuel. -}
-useFuel : { x:Int, y:Int } -> Pod -> Pod
+useFuel : { x : Int, y : Int } -> Pod -> Pod
 useFuel dir pod = { pod | fuel <- pod.fuel - abs dir.x - abs dir.y }
