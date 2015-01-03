@@ -2,7 +2,7 @@
 as well as utility functions for interacting with it. -}
 module Pod where
 
-import Util (Positioned, vec2Pair)
+import Util (Positioned)
 import Math.Vector2 as V2
 import String as S
 
@@ -17,8 +17,8 @@ type BoostDir = U | D | L | R
 
 {-| String representation of a pod. -}
 showPod : Pod -> String
-showPod pod = "{ pos=" ++ (toString <| vec2Pair pod.pos) ++ (S.fromList ['\n'])
-               ++ ", vel=" ++ (toString <| vec2Pair pod.vel) ++ (S.fromList ['\n'])
+showPod pod = "{ pos=" ++ (toString <| V2.toTuple pod.pos) ++ (S.fromList ['\n'])
+               ++ ", vel=" ++ (toString <| V2.toTuple pod.vel) ++ (S.fromList ['\n'])
                ++ ", collided=" ++ toString pod.collided ++ (S.fromList ['\n'])
                ++ ", boostDir=" ++ toString pod.boostDir ++ (S.fromList ['\n'])
                ++ ", fuel=" ++ toString pod.fuel ++ " }"

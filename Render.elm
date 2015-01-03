@@ -5,7 +5,7 @@ import Math.Vector2 as V2
 import State (Game)
 import Pod (Pod, BoostDir(..), showPod)
 import Planet (Planet)
-import Util (vec2Pair)
+
 import List (..)
 import Text (..)
 import Graphics.Element (..)
@@ -34,11 +34,11 @@ renderBg (w, h) = rect w h |> filled black
 {-| Render the pod. -}
 renderPod : Pod -> Form
 renderPod pod = square 10 |> filled blue
-                          |> move (vec2Pair pod.pos)
+                          |> move (V2.toTuple pod.pos)
 
 {-| Create a dashed line from the future pod states that is its trajectory. -}
 renderTrajectory : List Pod -> Form
-renderTrajectory pods = path (map (\pod -> (vec2Pair pod.pos)) pods)
+renderTrajectory pods = path (map (\pod -> (V2.toTuple pod.pos)) pods)
                         |> traced (dashed (rgb 44 167 176))
 
 {-| Render a boost a boost based on the direction.
@@ -46,7 +46,7 @@ This function should be called multiple times,
 because more than one boost could fire at once. -}
 renderBoost : Pod -> BoostDir -> Form
 renderBoost pod boostDir = 
-  let (oldX, oldY) = vec2Pair pod.pos
+  let (oldX, oldY) = V2.toTuple pod.pos
       offset = 10
       (newPos,rotDegrees) = case boostDir of
         U -> ((oldX, oldY - offset), 90)
@@ -65,11 +65,11 @@ renderPlanet planet =
   let sideLen = toFloat planet.mass * 2.5 |> round
   in image sideLen sideLen planet.imgPath
      |> toForm
-     |> move (vec2Pair planet.pos)
+     |> move (V2.toTuple planet.pos)
 
 {-| Render an explosion as an expanding red ball. -}
 renderExplosion : Pod -> Int -> Form
 renderExplosion pod exploSize = toFloat exploSize
   |> circle
   |> gradient (radial (0, 0) 10 (0, 10) (toFloat exploSize) [(0, rgb 252 75 65), (1, rgba 228 199 0 0)])
-  |> move (vec2Pair pod.pos)
+  |> move (V2.toTuple pod.pos)

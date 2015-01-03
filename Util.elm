@@ -22,12 +22,6 @@ iterate f x n = case n of
   0 -> []
   _ -> x :: (iterate f (f x) (n-1))
 
-{-| This function is frequently needed because this game uses
-the Vec2 type, but Elm functions require points as a pair of
-floats. -}
-vec2Pair : V2.Vec2 -> (Float, Float)
-vec2Pair point = (V2.getX point, V2.getY point)
-
 {-| Check if a Result type is Ok. -}
 isOk : Result error value -> Bool
 isOk res = case res of

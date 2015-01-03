@@ -2,7 +2,7 @@
 as well as utility functions for interacting with it. -}
 module Planet where
 
-import Util (Positioned, HasImage, vec2Pair)
+import Util (Positioned, HasImage)
 import Math.Vector2 as V2
 import String as S
 
@@ -11,7 +11,7 @@ type alias Planet = HasImage (Positioned { mass : Int })
 
 {-| String representation of a planet. -}
 showPlanet : Planet -> String
-showPlanet planet = "{ pos=" ++ (toString <| vec2Pair planet.pos)
+showPlanet planet = "{ pos=" ++ (toString <| V2.toTuple planet.pos)
                     ++ (S.fromList ['\n'])
                     ++ ", mass=" ++ toString planet.mass ++ " }"
 
