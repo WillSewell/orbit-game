@@ -7,6 +7,7 @@ import Math.Vector2 as V2
 import State (Game, GameState(..), game)
 import Pod (Pod, pod)
 import Planet (Planet, planet)
+import Config (config)
 import Http
 import Signal ((<~))
 import Signal
@@ -40,7 +41,7 @@ handleResult response = case response of
 {-| Json decoder for the level files. -}
 decoder : J.Decoder Game
 decoder = J.object2 game
-  ("pod" := J.object3 (\xpos ypos -> pod (V2.vec2 xpos ypos))
+  ("pod" := J.object3 (\xpos ypos -> pod config.podImgPath (V2.vec2 xpos ypos))
                       ("xpos" := J.float)
                       ("ypos" := J.float)
                       ("fuel" := J.int))

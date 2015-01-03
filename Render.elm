@@ -33,8 +33,8 @@ renderBg (w, h) = rect w h |> filled black
 
 {-| Render the pod. -}
 renderPod : Pod -> Form
-renderPod pod = square 10 |> filled blue
-                          |> move (V2.toTuple pod.pos)
+renderPod pod = image 10 10 pod.imgPath |> toForm
+                                        |> move (V2.toTuple pod.pos)
 
 {-| Create a dashed line from the future pod states that is its trajectory. -}
 renderTrajectory : List Pod -> Form
