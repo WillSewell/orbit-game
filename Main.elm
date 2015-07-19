@@ -29,8 +29,9 @@ level 1. Level is loaded by unpacking the JSON file into the game datatype. -}
 port runGetLevel : Signal (Task.Task Http.Error ())
 port runGetLevel =
   Signal.map
-    (\lvl -> flipResult (Result.map getLevel lvl)
-             `Task.andThen` Signal.send worldMailbox.address)
+    (\lvl -> 
+      flipResult (Result.map getLevel lvl)
+      `Task.andThen` Signal.send worldMailbox.address)
     numKeyPressed
 
 {-| Load in a new game if a new game event is triggered, else perform normal

@@ -13,12 +13,15 @@ type alias Planet = HasImage (Positioned { mass : Int })
 
 {-| String representation of a planet. -}
 showPlanet : Planet -> String
-showPlanet planet = "{ pos=" ++ (toString <| V2.toTuple planet.pos)
-                    ++ (S.fromList ['\n'])
-                    ++ ", mass=" ++ toString planet.mass ++ " }"
+showPlanet planet =
+  "{ pos=" ++ (toString <| V2.toTuple planet.pos)
+  ++ (S.fromList ['\n'])
+  ++ ", mass=" ++ toString planet.mass ++ " }"
 
 {-| Function for generating a new pod.
 The type constructor does not work because it uses extensible records. -}
-planet pos mass imgPath = { pos = pos
-                          , imgPath = imgPath
-                          , mass = mass }
+planet pos mass imgPath =
+  { pos = pos
+  , imgPath = imgPath
+  , mass = mass
+  }

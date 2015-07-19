@@ -43,12 +43,16 @@ handleResult { status, statusText, headers, url, value } =
 {-| Json decoder for the level files. -}
 decoder : J.Decoder Game
 decoder = J.object2 game
-  ("pod" := J.object3 (\xpos ypos -> pod config.podImgPath (V2.vec2 xpos ypos))
-                      ("xpos" := J.float)
-                      ("ypos" := J.float)
-                      ("fuel" := J.int))
-  ("planets" := J.list (J.object4 (\xpos ypos -> planet (V2.vec2 xpos ypos))
-                                  ("xpos" := J.float)
-                                  ("ypos" := J.float)
-                                  ("mass" := J.int)
-                                  ("imgPath" := J.string)))
+  ("pod" :=
+    J.object3
+      (\xpos ypos -> pod config.podImgPath (V2.vec2 xpos ypos))
+      ("xpos" := J.float)
+      ("ypos" := J.float)
+      ("fuel" := J.int))
+  ("planets" :=
+    J.list (J.object4
+      (\xpos ypos -> planet (V2.vec2 xpos ypos))
+      ("xpos" := J.float)
+      ("ypos" := J.float)
+      ("mass" := J.int)
+      ("imgPath" := J.string)))
