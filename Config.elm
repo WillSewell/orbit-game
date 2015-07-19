@@ -1,8 +1,10 @@
-{-| Module for storing game constants. -}
 module Config where
 
-import State (Game, GameState(..))
+{-| Module for storing game constants. -}
+
 import Math.Vector2 as V2
+
+import State exposing (Game, GameState(..))
 
 {-| Record of all game constants. -}
 type alias Config = { boostPwrFactor : Float

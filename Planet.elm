@@ -1,10 +1,12 @@
-{-| Module for holding types to represent planets,
-as well as utility functions for interacting with it. -}
 module Planet where
 
-import Util (Positioned, HasImage)
+{-| Module for holding types to represent planets,
+as well as utility functions for interacting with it. -}
+
 import Math.Vector2 as V2
 import String as S
+
+import Util exposing (Positioned, HasImage)
 
 {-| Represents a planet. -}
 type alias Planet = HasImage (Positioned { mass : Int })

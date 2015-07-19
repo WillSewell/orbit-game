@@ -1,10 +1,12 @@
-{-| Module for holding types to represent the pod,
-as well as utility functions for interacting with it. -}
 module Pod where
 
-import Util (HasImage, Positioned)
+{-| Module for holding types to represent the pod,
+as well as utility functions for interacting with it. -}
+
 import Math.Vector2 as V2
 import String as S
+
+import Util exposing (HasImage, Positioned)
 
 {-| Represents the pod. -}
 type alias Pod = HasImage (Positioned { vel : V2.Vec2

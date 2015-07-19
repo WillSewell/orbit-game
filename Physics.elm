@@ -1,11 +1,13 @@
-{-| Module with functions dealing with physics updates. -}
 module Physics where
 
+{-| Module with functions dealing with physics updates. -}
+
+import List exposing (foldl)
 import Math.Vector2 as V2
-import Pod (Pod)
-import Planet (Planet)
-import Config (config)
-import List (..)
+
+import Config exposing (config)
+import Planet exposing (Planet)
+import Pod exposing (Pod)
 
 {-| Update the position of the pod based on velocity and position. -}
 physics : Float -> Pod -> Pod

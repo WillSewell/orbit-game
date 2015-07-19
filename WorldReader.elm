@@ -1,26 +1,26 @@
+module WorldReader where
+
 {-| Module for requesting for world files stored in JSON format,
 these are then converted into the world datatype. -}
 
-module WorldReader where
-
-import Math.Vector2 as V2
-import State (Game, GameState(..), game)
-import Pod (Pod, pod)
-import Planet (Planet, planet)
-import Config (config)
 import Http
-import Signal ((<~))
-import Signal
-import Json.Decode ((:=))
 import Json.Decode as J
-import Debug as D
+import Json.Decode exposing ((:=))
+import Math.Vector2 as V2
+import Signal
+import Signal exposing ((<~))
+import Task
 
-{-| Request the level denoted by a number. It's a signal transformer that takes a
-keypress, and if it's numerical, loads the level -- otherwise defaults to level 1.
-Level is loaded by unpacking the JSON file into the game datatype. -}
-getLevel : Signal.Signal (Result String Int) -> Signal.Signal (Result String Game)
-getLevel levelSignal = handleResult <~ (Http.sendGet 
-                                         (genLevelRequestUri <~ levelSignal))
+import Config exposing (config, defaultGame)
+import Planet exposing (Planet, planet)
+import Pod exposing (Pod, pod)
+import State exposing (Game, GameState(..), game)
+
+worldMailbox : Signal.Mailbox (Result String Game)
+worldMailbox = Signal.mailbox (Ok defaultGame)
+
+getLevel : Int -> Task.Task Http.Error Game
+getLevel lvlNum = Http.get decoder ("worlds/" ++ (toString lvlNum) ++ ".json")
 
 {-| Build the level URI based on a level number which may be an error. -}
 genLevelRequestUri : Result String Int -> String
@@ -30,13 +30,15 @@ genLevelRequestUri lvl = (case lvl of
   |> \lvlStr -> "worlds/" ++ lvlStr ++ ".json"
 
 {-| Take the response signal, and convert it into a Game. -}
-handleResult : Http.Response String -> Result String Game
-handleResult response = case response of
-  Http.Success string -> J.decodeString decoder string
-  Http.Waiting -> Err "Waiting to download level..."
-  Http.Failure code msg -> Err <| "Failed to download level. Code: "
-                                  ++ toString code 
-                                  ++ " error: " ++ msg
+handleResult : Http.Response -> Result String Game
+handleResult { status, statusText, headers, url, value } =
+  if status == 200 then
+    case value of
+      Http.Text s -> J.decodeString decoder s
+  else
+    Err ("Failed to download level. Code: "
+        ++ toString status
+        ++ " error: " ++ statusText)
 
 {-| Json decoder for the level files. -}
 decoder : J.Decoder Game

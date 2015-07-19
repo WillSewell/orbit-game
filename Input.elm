@@ -1,16 +1,21 @@
-{-| Types for the inputs and functions to unmarshalling the input into these types. -}
 module Input where
 
-import Keyboard
-import Time
-import Signal ((<~))
-import Signal
-import State (Game)
-import WorldReader (getLevel)
+{-| Types for the inputs and functions to unmarshalling the input into these
+types. -}
+
 import Char
+import Http
+import Keyboard
+import Signal
+import Signal exposing ((<~))
 import String
-import Util (isOk)
-import Debug as D
+import Task
+import Time
+
+import Config exposing (defaultGame)
+import State exposing (Game)
+import Util exposing (isOk)
+import WorldReader exposing (worldMailbox)
 
 {-| Represents possible update values. -}
 type Update
@@ -28,11 +33,13 @@ controls = let delta = Signal.map (\t -> t/20) (Time.fps 24)
 
 {-| Get a number representing the numerical key pressed. -}
 numKeyPressed : Signal.Signal (Result String Int)
-numKeyPressed = Signal.keepIf isOk (Ok 1) <| String.toInt
+numKeyPressed = Signal.filter isOk (Ok 1) <| String.toInt
                                           << String.fromChar
                                           << Char.fromCode
-                                          <~ Keyboard.lastPressed
+                                          <~ Keyboard.presses
 
 {-| Combine the input from the user, and input from loading a new level. -}
 input : Signal.Signal Update
-input = Signal.merge (Reset <~ getLevel numKeyPressed) (NormalInput <~ controls)
+input = Signal.mergeMany [ Reset <~ worldMailbox.signal
+                         , NormalInput <~ controls
+                         ]

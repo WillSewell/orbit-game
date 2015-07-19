@@ -1,10 +1,12 @@
-{-| Module containing types that represent the current state of the game.
-Also contains the defaultGame (the start state). -}
 module State where
 
+{-| Module containing types that represent the current state of the game.
+Also contains the defaultGame (the start state). -}
+
 import Math.Vector2 as V2
-import Pod (Pod)
-import Planet (Planet)
+
+import Planet exposing (Planet)
+import Pod exposing (Pod)
 
 {-| Represents the current state of the game. -}
 type alias Game = { pod : Pod

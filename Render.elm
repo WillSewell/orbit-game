@@ -1,31 +1,45 @@
-{-| Module that takes a game state, and renders it. -}
 module Render where
 
-import Math.Vector2 as V2
-import State (Game)
-import Pod (Pod, BoostDir(..), showPod)
-import Planet (Planet)
+{-| Module that takes a game state, and renders it. -}
 
-import List (..)
-import Text (..)
-import Graphics.Element (..)
-import Graphics.Collage (..)
-import Color (..)
-import Debug as D
+import Color exposing (black, radial, rgb, rgba)
+import Graphics.Element exposing (Element, below, beside, image, show)
+import Graphics.Collage exposing
+  ( Form
+  , circle
+  , collage
+  , dashed
+  , filled
+  , gradient
+  , move
+  , oval
+  , path
+  , rect
+  , rotate
+  , toForm
+  , traced
+  )
+import Math.Vector2 as V2
+import List exposing (length, map)
+import Text exposing (fromString)
+
+import Planet exposing (Planet)
+import Pod exposing (Pod, BoostDir(..), showPod)
+import State exposing (Game)
 
 {-| The main render function that renders the state by creating a
 collage in the window dimensions. -}
-render : (Int, Int) -> Game -> Element
-render (w', h') { pod, planets, status, futureStates, explosionSize } =
-    let (w, h) = (toFloat w', toFloat h')
-    --render each component with a helper function and add it to the list
-    in collage w' (h' - 20) ([renderBg (w,h), renderPod pod, renderTrajectory futureStates]
-                             ++ map renderPlanet planets
-                             ++ map (renderBoost pod) pod.boostDir
-                             ++ [renderExplosion pod explosionSize])
-     -- render game stats
-     `below` (asText ("Fuel: " ++ toString pod.fuel)
-              `beside` asText ("         Status: " ++ status))
+renderGame : (Int, Int) -> Game -> Element
+renderGame (w', h') { pod, planets, status, futureStates, explosionSize } =
+  let (w, h) = (toFloat w', toFloat h')
+  --render each component with a helper function and add it to the list
+  in collage w' (h' - 20) ([renderBg (w,h), renderPod pod, renderTrajectory futureStates]
+                           ++ map renderPlanet planets
+                           ++ map (renderBoost pod) pod.boostDir
+                           ++ [renderExplosion pod explosionSize])
+   -- render game stats
+   `below` (show ("Fuel: " ++ toString pod.fuel)
+            `beside` show ("         Status: " ++ status))
 
 {-| Create a black background. -}
 renderBg : (Float, Float) -> Form
@@ -61,7 +75,8 @@ renderBoost pod boostDir =
 {-| Render a planet. -}
 renderPlanet : Planet -> Form
 renderPlanet planet = 
-  {-| scale up the mass because that represents the radius, and the planet image is a square -}
+  -- scale up the mass because that represents the radius, and the planet image
+  -- is a square
   let sideLen = toFloat planet.mass * 2.5 |> round
   in image sideLen sideLen planet.imgPath
      |> toForm

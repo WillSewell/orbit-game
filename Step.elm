@@ -1,16 +1,17 @@
-{-| The main module for updating the state at each step of the game. -}
 module Step where
 
-import Input (Input)
-import Util (iterate)
-import Config (config, defaultGame)
-import State (Game, GameState(..))
-import Physics (..)
-import Pod (Pod, BoostDir(..), showPod)
-import Planet (Planet)
-import List (..)
+{-| The main module for updating the state at each step of the game. -}
+
+import List exposing (any)
 import Math.Vector2 as V2
-import Debug as D
+
+import Config exposing (config, defaultGame)
+import Input exposing (Input)
+import Physics exposing (boost, gravityPullAll, physics)
+import Planet exposing (Planet)
+import Pod exposing (Pod, BoostDir(..), showPod)
+import State exposing (Game, GameState(..))
+import Util exposing (iterate)
 
 {-| The top level function that calls a different helper for each object. -}
 step : Input -> Game -> Game
