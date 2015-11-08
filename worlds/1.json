@@ -9,19 +9,19 @@
             "xpos": 50,
             "ypos": 50,
             "mass": 20,
-            "imgPath": "../resources/images/planet_arid.png"
+            "imgPath": "resources/images/planet_arid.png"
         },
         {
             "xpos": 100,
             "ypos": 0,
             "mass": 40,
-            "imgPath": "../resources/images/planet_desolate.png"
+            "imgPath": "resources/images/planet_desolate.png"
         },
         {
             "xpos": 150,
             "ypos": 200,
             "mass": 60,
-            "imgPath": "../resources/images/planet_frozen.png"
+            "imgPath": "resources/images/planet_frozen.png"
         }
     ]
 }
